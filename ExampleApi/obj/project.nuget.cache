@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "XEKUaBK+GSLYxz90qagRTOIREFgqdrf+M73e9X2o39GNrb4U5FJBPIoUHA0Mo2apDVX22/W0Rk1bPWDtoe9aTg==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\aa\\Documents\\GitHub\\deploydotnetcoreapitogke\\ExampleApi\\ExampleApi.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\aa\\.nuget\\packages\\microsoft.visualstudio.azure.containers.tools.targets\\1.10.8\\microsoft.visualstudio.azure.containers.tools.targets.1.10.8.nupkg.sha512"
+  ],
+  "logs": []
+}
