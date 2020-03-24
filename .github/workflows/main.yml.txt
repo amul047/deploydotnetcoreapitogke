@@ -1,0 +1,96 @@
+name: CI/CD to GKE with github actions workflow 
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+# Environment variables available to all jobs and steps in this workflow
+env:
+  GKE_PROJECT: ${{ secrets.GKE_PROJECT }}
+  GKE_EMAIL: ${{ secrets.GKE_EMAIL }}
+  GITHUB_SHA: ${{ github.sha }}
+  GKE_ZONE: australia-southeast1-b
+  GKE_CLUSTER: example-gke-cluster
+  VOCUS_APPLICATION_NAME: vocusapplication
+  DOCKER_IMAGE_NAME: image
+  REGISTRY_HOSTNAME: gcr.io
+  SOURCECODEBRANCH: production
+
+jobs:
+  build:
+    name: Test and deploy to GKE
+    runs-on: ubuntu-latest
+
+    steps:
+    
+    - name: Checkout source code
+      uses: actions/checkout@v2   
+        
+    - name: Get branch name from github build context (for setting up deployment routing to our pull request environments)
+      shell: bash
+      run: echo "##[set-output name=branch;]$(echo ${SOURCECODEBRANCH////})"
+      id: extract_branch
+      env:
+        SOURCECODEBRANCH: ${{ github.head_ref }}
+      if: github.event_name == 'pull_request'   
+      
+    - name: Get vocus application name
+      shell: bash
+      id: get_vocus_application
+      run: echo "##[set-output name=name;]$(echo ${VOCUS_APPLICATION_NAME})"
+      env:
+        VOCUS_APPLICATION_NAME: ${{ github.event.repository.name }}${{ steps.extract_branch.outputs.branch }}    
+    
+    - name: Find and replace placeholder with vocus application name (using jacobtomlinson/gha-find-replace@master)
+      uses: jacobtomlinson/gha-find-replace@master
+      with:
+        find: "placeholdertobereplacedbyvocusapplicationnameincicdpipeline"
+        replace: ${{ steps.get_vocus_application.outputs.name }}
+    
+    - name: Get docker image name
+      shell: bash
+      id: get_docker_image
+      run: echo "##[set-output name=name;]$(echo ${DOCKER_IMAGE_NAME})"
+      env:
+        DOCKER_IMAGE_NAME: "gcr.io/${{ secrets.GKE_PROJECT }}/${{ steps.get_vocus_application.outputs.name }}:${{ github.sha }}"
+    
+    - name: Find and replace another placeholder with docker image name (using jacobtomlinson/gha-find-replace@master)
+      uses: jacobtomlinson/gha-find-replace@master
+      with:
+        find: "placeholdertobereplacedbydockerimagenameincicdpipeline"
+        replace: ${{ steps.get_docker_image.outputs.name }}
+
+    - name: Setup gcloud CLI
+      uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+      with:
+        version: '270.0.0'
+        service_account_key: ${{ secrets.GKE_KEY }}
+
+    - name: Configure docker to use the gcloud CLI as a credential helper
+      run: |
+        # Set up docker to authenticate
+        # via gcloud command-line tool.
+        gcloud auth configure-docker
+
+    - name: Build docker image of the application using the docker CLI
+      run: |        
+        docker build -t "$REGISTRY_HOSTNAME"/"$GKE_PROJECT"/"${{ steps.get_vocus_application.outputs.name }}":"$GITHUB_SHA" \
+          --build-arg GITHUB_SHA="$GITHUB_SHA" \
+          --build-arg GITHUB_REF="$GITHUB_REF" ./ExampleApi
+
+    - name: Push the Docker image to Google Container Registry using the docker CLI
+      run: |
+        docker push $REGISTRY_HOSTNAME/$GKE_PROJECT/${{ steps.get_vocus_application.outputs.name }}:$GITHUB_SHA
+
+    - name: Set up Kustomize (this app allows us to do update environment names and labels in Kubernetes etc.)
+      run: |
+        curl -o kustomize --location https://github.com/kubernetes-sigs/kustomize/releases/download/v3.1.0/kustomize_3.1.0_linux_amd64
+        chmod u+x ./kustomize
+        
+    - name: Deploy the Docker image to the GKE cluster using the gcloud CLI
+      run: |
+        gcloud container clusters get-credentials $GKE_CLUSTER --zone $GKE_ZONE --project $GKE_PROJECT
+        kubectl apply -f ./
+        
