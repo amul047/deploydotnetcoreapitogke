@@ -92,5 +92,5 @@ jobs:
     - name: Deploy the Docker image to the GKE cluster using the gcloud CLI
       run: |
         gcloud container clusters get-credentials $GKE_CLUSTER --zone $GKE_ZONE --project $GKE_PROJECT
-        kubectl apply -f ./
+        kubectl apply -f .
         
