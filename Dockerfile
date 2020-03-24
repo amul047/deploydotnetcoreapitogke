@@ -1,21 +1,26 @@
-#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
+# stage 1 -- build
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
 
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS base
+# copy csproj and restore, this allows docker to
+# cache the intermedaite image
 WORKDIR /app
-EXPOSE 80
+COPY ./src/*.csproj ./
+RUN dotnet restore
 
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
-WORKDIR /src
-COPY ["ExampleApi/ExampleApi.csproj", "ExampleApi/"]
-RUN dotnet restore "ExampleApi/ExampleApi.csproj"
-COPY . .
-WORKDIR "/src/ExampleApi"
-RUN dotnet build "ExampleApi.csproj" -c Release -o /app/build
+# copy everything else and build
+COPY ./src/ ./
+RUN find -type d -name bin -prune -exec rm -rf {} \; && find -type d -name obj -prune -exec rm -rf {} \;
+RUN dotnet publish -c Release -o dist
 
-FROM build AS publish
-RUN dotnet publish "ExampleApi.csproj" -c Release -o /app/publish
-
-FROM base AS final
+# stage 2 -- copy to dotnet runtime image
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1 AS runtime
 WORKDIR /app
-COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "ExampleApi.dll"]
+
+# copy the aspnetcore app
+COPY --from=build /app/dist/ ./
+
+# heroku sets the PORT variable at runtime, then only forwards connections to that port number.
+# https://devcenter.heroku.com/articles/container-registry-and-runtime#get-the-port-from-the-environment-variable
+ENV PORT=5000
+
+CMD ASPNETCORE_URLS=http://+:$PORT dotnet T3.Communications.dll
