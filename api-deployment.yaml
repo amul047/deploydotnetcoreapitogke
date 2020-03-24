@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: placeholdertobereplacedbyvocusapplicationnameincicdpipeline
+  name: placeholdertobereplacedbyvocusapplicationnameincicdpipelinedeployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: placeholdertobereplacedbyvocusapplicationnameincicdpipeline
+  template:
+    metadata:
+      labels:
+        app: placeholdertobereplacedbyvocusapplicationnameincicdpipeline
+    spec:
+      containers:
+      - env:
+        - name: DATABASE_URL
+          value: postgres://wosunalg:nUTZ0fu5kVbjT0JitxveXHzZGymzTx1U@rosie.db.elephantsql.com:5432/wosunalg
+        image: placeholdertobereplacedbydockerimagenameincicdpipeline
+        name: placeholdertobereplacedbydockerimagenameincicdpipelinecontainer
