@@ -18,4 +18,7 @@ RUN dotnet publish "ExampleApi.csproj" -c Release -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "ExampleApi.dll"]
+
+ENV PORT=5000
+
+CMD ASPNETCORE_URLS=http://+:$PORT dotnet ExampleApi.dll
