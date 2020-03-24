@@ -17,4 +17,4 @@ spec:
       containers:
       - env:
         image: placeholdertobereplacedbydockerimagenameincicdpipeline
-        name: placeholdertobereplacedbydockerimagenameincicdpipelinecontainer
+        name: placeholdertobereplacedbyvocusapplicationnameincicdpipelinecontainer
