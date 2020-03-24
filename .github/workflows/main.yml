@@ -78,7 +78,7 @@ jobs:
       run: |        
         docker build -t "$REGISTRY_HOSTNAME"/"$GKE_PROJECT"/"${{ steps.get_vocus_application.outputs.name }}":"$GITHUB_SHA" \
           --build-arg GITHUB_SHA="$GITHUB_SHA" \
-          --build-arg GITHUB_REF="$GITHUB_REF" ./ExampleApi
+          --build-arg GITHUB_REF="$GITHUB_REF" ./ExampleApi/
 
     - name: Push the Docker image to Google Container Registry using the docker CLI
       run: |
