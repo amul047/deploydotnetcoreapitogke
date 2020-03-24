@@ -39,7 +39,7 @@ jobs:
     - name: Get vocus application name
       shell: bash
       id: get_vocus_application
-      run: echo "##[set-output name=name;]$(echo ${VOCUS_APPLICATION_NAME})"
+      run: echo "##[set-output name=name;]$(echo ${VOCUS_APPLICATION_NAME} | cut -c1-30)"
       env:
         VOCUS_APPLICATION_NAME: ${{ github.event.repository.name }}${{ steps.extract_branch.outputs.branch }}    
     
