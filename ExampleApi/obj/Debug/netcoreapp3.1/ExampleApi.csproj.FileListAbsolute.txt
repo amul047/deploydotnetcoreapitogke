@@ -27,7 +27,6 @@ C:\Users\aa\Documents\GitHub\deploydotnetcoreapitogke\ExampleApi\bin\Debug\netco
 C:\Users\aa\Documents\GitHub\deploydotnetcoreapitogke\ExampleApi\bin\Debug\netcoreapp3.1\ExampleApi.runtimeconfig.dev.json
 C:\Users\aa\Documents\GitHub\deploydotnetcoreapitogke\ExampleApi\bin\Debug\netcoreapp3.1\ExampleApi.dll
 C:\Users\aa\Documents\GitHub\deploydotnetcoreapitogke\ExampleApi\bin\Debug\netcoreapp3.1\ExampleApi.pdb
-C:\Users\aa\Documents\GitHub\deploydotnetcoreapitogke\ExampleApi\obj\Debug\netcoreapp3.1\ExampleApi.csprojAssemblyReference.cache
 C:\Users\aa\Documents\GitHub\deploydotnetcoreapitogke\ExampleApi\obj\Debug\netcoreapp3.1\ExampleApi.csproj.CoreCompileInputs.cache
 C:\Users\aa\Documents\GitHub\deploydotnetcoreapitogke\ExampleApi\obj\Debug\netcoreapp3.1\ExampleApi.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\aa\Documents\GitHub\deploydotnetcoreapitogke\ExampleApi\obj\Debug\netcoreapp3.1\ExampleApi.AssemblyInfoInputs.cache
