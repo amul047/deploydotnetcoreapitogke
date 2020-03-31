@@ -24,7 +24,7 @@ namespace ExampleApi.IntegrationTests
             var customerTypes = JsonConvert.DeserializeObject<List<CustomerType>>(responseString);
 
             // Assert
-            Assert.Equal(3, customerTypes.Count);
+            Assert.Equal(4, customerTypes.Count);
         }
     }
 }
