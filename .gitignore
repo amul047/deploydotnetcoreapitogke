@@ -454,3 +454,4 @@ __pycache__/
 # BizTalk build output
 
 # End of https://www.gitignore.io/api/csharp,visualstudio
+.vs/ExampleApi/v16/.suo
