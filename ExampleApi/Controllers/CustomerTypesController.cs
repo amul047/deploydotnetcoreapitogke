@@ -25,6 +25,7 @@ namespace ExampleApi.Controllers
                 new CustomerType{Code = "Residential", DisplayName = "Residential"},
                 new CustomerType{Code = "Education", DisplayName = "Education"},
                 new CustomerType{Code = "Business", DisplayName = "Business"},
+                new CustomerType{Code = "SM", DisplayName = "SmallBusiness"}
             };
         }
     }
